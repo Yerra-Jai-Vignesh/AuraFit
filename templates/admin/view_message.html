@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}View Message - AuraFit{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="card-title mb-0">Message Details</h2>
+                    <a href="{{ url_for('admin_messages') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Messages
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h5 class="text-muted mb-3">From</h5>
+                        <p class="mb-1"><strong>{{ message.name }}</strong></p>
+                        <p class="text-muted">{{ message.email }}</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="text-muted mb-3">Subject</h5>
+                        <p>{{ message.subject }}</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="text-muted mb-3">Message</h5>
+                        <p class="white-space-pre-wrap">{{ message.message }}</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="text-muted mb-3">Received</h5>
+                        <p>{{ message.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="mailto:{{ message.email }}" class="btn btn-primary">
+                            <i class="bi bi-envelope me-2"></i>Reply via Email
+                        </a>
+                        <form method="POST" action="{{ url_for('admin_delete_message', message_id=message.id) }}" class="d-inline">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this message?')">
+                                <i class="bi bi-trash me-2"></i>Delete Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

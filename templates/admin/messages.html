@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - Messages - AuraFit{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Contact Messages</h2>
+    
+    <div class="card">
+        <div class="card-body">
+            {% if messages %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Subject</th>
+                                <th>Message</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for message in messages %}
+                            <tr class="{% if not message.is_read %}table-warning{% endif %}">
+                                <td>{{ message.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>{{ message.name }}</td>
+                                <td>{{ message.email }}</td>
+                                <td>{{ message.subject }}</td>
+                                <td>{{ message.message[:100] }}{% if message.message|length > 100 %}...{% endif %}</td>
+                                <td>
+                                    {% if message.is_read %}
+                                        <span class="badge bg-success">Read</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Unread</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('admin_view_message', message_id=message.id) }}" class="btn btn-sm btn-primary">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted">No messages found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Goals - AuraFit{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <h1 class="mb-2">Your Goals</h1>
+        <p class="text-muted">Set and track your fitness goals</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card bg-dark">
+            <div class="card-body">
+                <h5 class="card-title">Current Goals</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card bg-darker">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">Weekly Workouts</h6>
+                                <h3 class="mb-3">3/5</h3>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar" role="progressbar" style="width: 60%"></div>
+                                </div>
+                                <p class="text-muted mb-0">Complete 5 workouts this week</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-darker">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">Calories Burned</h6>
+                                <h3 class="mb-3">1,200/2,000</h3>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar" role="progressbar" style="width: 60%"></div>
+                                </div>
+                                <p class="text-muted mb-0">Burn 2,000 calories this week</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-darker">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">Workout Streak</h6>
+                                <h3 class="mb-3">5/7</h3>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar" role="progressbar" style="width: 71%"></div>
+                                </div>
+                                <p class="text-muted mb-0">Maintain a 7-day workout streak</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card bg-dark">
+            <div class="card-body">
+                <h5 class="card-title">Set New Goal</h5>
+                <form action="{{ url_for('add_goal') }}" method="post">
+                    <div class="mb-3">
+                        <label for="goalType" class="form-label">Goal Type</label>
+                        <select class="form-select bg-darker" id="goalType" name="goal_category">
+                            <option value="workouts">Weekly Workouts</option>
+                            <option value="calories">Calories Burned</option>
+                            <option value="streak">Workout Streak</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="goalTarget" class="form-label">Target</label>
+                        <input type="number" class="form-control bg-darker" id="goalTarget" name="goal_title" min="1">
+                    </div>
+                    <div class="mb-3">
+                        <label for="goalDeadline" class="form-label">Deadline</label>
+                        <input type="date" class="form-control bg-darker" id="goalDeadline" name="goal_deadline">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Set Goal</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card bg-dark">
+            <div class="card-body">
+                <h5 class="card-title">Goal History</h5>
+                <div class="table-responsive">
+                    <table class="table table-dark">
+                        <thead>
+                            <tr>
+                                <th>Goal</th>
+                                <th>Target</th>
+                                <th>Progress</th>
+                                <th>Status</th>
+                                <th>Deadline</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">No goal history yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

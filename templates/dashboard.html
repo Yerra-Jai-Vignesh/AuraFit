@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - AuraFit{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <h1 class="mb-2">Welcome back, {{ user.name }}!</h1>
+        <p class="text-muted">Here's your fitness summary for today</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-dark h-100">
+            <div class="card-body">
+                <h5 class="card-title">Today's Workout</h5>
+                <h2 class="display-4 mb-3">0 min</h2>
+                <p class="text-muted">No workout completed today</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-dark h-100">
+            <div class="card-body">
+                <h5 class="card-title">Calories Burned</h5>
+                <h2 class="display-4 mb-3">0 kcal</h2>
+                <p class="text-muted">Track your first workout to see progress</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-dark h-100">
+            <div class="card-body">
+                <h5 class="card-title">Current Streak</h5>
+                <h2 class="display-4 mb-3">0 days</h2>
+                <p class="text-muted">Start your fitness journey today!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="card bg-dark h-100">
+            <div class="card-body">
+                <h5 class="card-title">Weekly Progress</h5>
+                <div class="d-flex align-items-center justify-content-center" style="height: 300px;">
+                    <p class="text-muted">Chart will be displayed here</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-dark h-100">
+            <div class="card-body">
+                <h5 class="card-title">AI Coach Message</h5>
+                <div class="p-3 bg-darker rounded mb-3">
+                    <p class="mb-2">Welcome to AuraFit! I'm your personal AI fitness coach. Let's work together to achieve your fitness goals.</p>
+                    <p class="text-muted mb-0">Based on your profile, I'll create personalized workout plans and provide guidance throughout your fitness journey.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card bg-dark">
+            <div class="card-body">
+                <h5 class="card-title">Quick Actions</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <a href="{{ url_for('progress') }}" class="btn btn-outline-primary w-100 mb-2">Log Workout</a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{{ url_for('goals') }}" class="btn btn-outline-primary w-100 mb-2">Set Goals</a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{{ url_for('chatbot') }}" class="btn btn-outline-primary w-100 mb-2">Ask Questions</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

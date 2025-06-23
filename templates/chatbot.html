@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block title %}AI Coach - AuraFit{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <h2 class="mb-2">AI Fitness Coach</h2>
+                <p class="text-muted mb-4">Ask me anything about workouts, nutrition, or motivation!</p>
+                <div class="d-flex justify-content-center gap-2 mb-4">
+                    <button class="btn btn-outline-primary quick-action-btn" data-prompt="What's a good workout for today?">Workout</button>
+                    <button class="btn btn-outline-primary quick-action-btn" data-prompt="What should I eat before my workout?">Nutrition</button>
+                    <button class="btn btn-outline-primary quick-action-btn" data-prompt="I need some motivation">Motivation</button>
+                    <button class="btn btn-outline-primary" id="logWorkoutBtn">Log Workout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">This Week's Progress</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card bg-dark">
+                            <div class="card-body text-center">
+                                <h2 class="display-4 mb-2" id="totalWorkouts">0</h2>
+                                <p class="text-muted mb-0">Workouts</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-dark">
+                            <div class="card-body text-center">
+                                <h2 class="display-4 mb-2" id="totalDuration">0</h2>
+                                <p class="text-muted mb-0">Minutes</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-dark">
+                            <div class="card-body text-center">
+                                <h2 class="display-4 mb-2" id="avgIntensity">0</h2>
+                                <p class="text-muted mb-0">Avg Intensity</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="chat-messages" id="chatMessages">
+                    {% if messages %}
+                        {% for msg in messages|reverse %}
+                        <div class="message {{ 'bot' if msg.is_bot else 'user' }}">
+                            <div class="position-relative">
+                                <p class="mb-0">{{ msg.message }}</p>
+                                <small class="message-time">{{ msg.timestamp.strftime('%H:%M') }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="message bot">
+                            <div class="position-relative">
+                                <p class="mb-0">Hello! I'm your AI fitness coach. How can I help you today?</p>
+                                <small class="message-time">{{ now().strftime('%H:%M') }}</small>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <form id="chatForm" class="mb-3">
+                    <div class="input-group">
+                        <input type="text" id="messageInput" class="form-control" placeholder="Type your message..." autocomplete="off">
+                        <button type="submit" class="btn btn-primary">
+                            <svg viewBox="0 0 24 24" width="24" height="24">
+                                <path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+                <div class="d-flex gap-2 flex-wrap">
+                    <span class="text-muted">Try asking about:</span>
+                    <span class="badge bg-dark hint">workout routines</span>
+                    <span class="badge bg-dark hint">nutrition tips</span>
+                    <span class="badge bg-dark hint">motivation</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatForm = document.getElementById('chatForm');
+    const messageInput = document.getElementById('messageInput');
+    const chatMessages = document.getElementById('chatMessages');
+    const quickActionButtons = document.querySelectorAll('.quick-action-btn');
+    const logWorkoutBtn = document.getElementById('logWorkoutBtn');
+
+    // Function to add a message to the chat
+    function addMessage(message, isBot = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isBot ? 'bot' : 'user'}`;
+        
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        
+        messageDiv.innerHTML = `
+            <div class="position-relative">
+                <p class="mb-0">${message}</p>
+                <small class="message-time">${timeString}</small>
+            </div>
+        `;
+        
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Function to send message to server
+    async function sendMessage(message) {
+        try {
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: message })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                addMessage(data.response, true);
+            } else {
+                addMessage('Sorry, I encountered an error. Please try again.', true);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            addMessage('Sorry, I encountered an error. Please try again.', true);
+        }
+    }
+
+    // Handle form submission
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const message = messageInput.value.trim();
+        
+        if (message) {
+            addMessage(message, false);
+            messageInput.value = '';
+            sendMessage(message);
+        }
+    });
+
+    // Handle quick action buttons
+    quickActionButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const prompt = this.dataset.prompt;
+            messageInput.value = prompt;
+            chatForm.dispatchEvent(new Event('submit'));
+        });
+    });
+
+    // Handle log workout button
+    logWorkoutBtn.addEventListener('click', function() {
+        const prompt = "I'd like to log my workout. What exercises did you do today?";
+        messageInput.value = prompt;
+        chatForm.dispatchEvent(new Event('submit'));
+    });
+
+    // Add click handlers for hint badges
+    document.querySelectorAll('.hint').forEach(hint => {
+        hint.addEventListener('click', function() {
+            messageInput.value = this.textContent;
+            chatForm.dispatchEvent(new Event('submit'));
+        });
+    });
+});
+</script>
+{% endblock %} 

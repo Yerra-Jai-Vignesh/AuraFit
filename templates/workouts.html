@@ -1,0 +1,362 @@
+{% extends "base.html" %}
+
+{% block title %}Workouts - AuraFit{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <h1 class="mb-2">Your Workouts</h1>
+        <p class="text-muted">Track and manage your workout routines</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card bg-dark">
+            <div class="card-body">
+                <h5 class="card-title">Quick Start</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card bg-darker">
+                            <div class="card-body text-center">
+                                <h3 class="mb-3">Beginner</h3>
+                                <p class="text-muted">Perfect for starting your fitness journey</p>
+                                <a href="#" class="btn btn-outline-primary w-100 start-workout-btn" data-level="beginner">Start Workout</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-darker">
+                            <div class="card-body text-center">
+                                <h3 class="mb-3">Intermediate</h3>
+                                <p class="text-muted">For those with some experience</p>
+                                <a href="#" class="btn btn-outline-primary w-100 start-workout-btn" data-level="intermediate">Start Workout</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-darker">
+                            <div class="card-body text-center">
+                                <h3 class="mb-3">Advanced</h3>
+                                <p class="text-muted">Challenging workouts for experienced users</p>
+                                <a href="#" class="btn btn-outline-primary w-100 start-workout-btn" data-level="advanced">Start Workout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card bg-dark">
+            <div class="card-body">
+                <h5 class="card-title">Recent Workouts</h5>
+                <div class="table-responsive">
+                    <table class="table table-dark">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Workout</th>
+                                <th>Duration</th>
+                                <th>Calories</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">No workouts recorded yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card bg-dark">
+            <div class="card-body">
+                <h5 class="card-title">Custom Workouts</h5>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#createWorkoutModal">Create New Workout</button>
+                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#importWorkoutModal">Import Workout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Workout Modal -->
+<div class="modal fade" id="workoutModal" tabindex="-1" aria-labelledby="workoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="workoutModalLabel">Workout</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="exercise-step-container">
+          <div id="exercise-title" style="font-size: 1.5rem; font-weight: bold;"></div>
+          <img id="exercise-gif" src="" alt="Exercise GIF" style="max-width: 300px; display: block; margin: 0 auto 1rem auto;" />
+          <div id="exercise-detail" class="mb-3" style="font-size: 1.2rem;"></div>
+          <div id="exercise-timer" class="mb-3" style="font-size: 2rem; font-weight: bold; display:none;">00:00</div>
+          <div class="progress mb-3" style="height: 20px; display: none;" id="timer-progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+          </div>
+          <button id="start-exercise-btn" class="btn btn-primary">Start</button>
+          <button id="done-exercise-btn" class="btn btn-success" style="display:none;">Done</button>
+        </div>
+        <div id="workout-complete" class="text-center" style="display:none;">
+          <h4>Workout Complete! 🎉</h4>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Workout Modal -->
+<div class="modal fade" id="createWorkoutModal" tabindex="-1" aria-labelledby="createWorkoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createWorkoutModalLabel">Create New Workout</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="createWorkoutForm">
+          <div class="mb-3">
+            <label for="workoutName" class="form-label">Workout Name</label>
+            <input type="text" class="form-control" id="workoutName" required>
+          </div>
+          <div class="mb-3">
+            <label for="workoutDescription" class="form-label">Description</label>
+            <textarea class="form-control" id="workoutDescription" rows="3"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="workoutType" class="form-label">Type</label>
+            <select class="form-select" id="workoutType" required>
+              <option value="cardio">Cardio</option>
+              <option value="strength">Strength</option>
+              <option value="flexibility">Flexibility</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="workoutDifficulty" class="form-label">Difficulty</label>
+            <select class="form-select" id="workoutDifficulty" required>
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="workoutDuration" class="form-label">Duration (minutes)</label>
+            <input type="number" class="form-control" id="workoutDuration" required>
+          </div>
+          <div class="mb-3">
+            <label for="workoutCalories" class="form-label">Calories Burned</label>
+            <input type="number" class="form-control" id="workoutCalories" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="saveWorkoutBtn">Save Workout</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Import Workout Modal -->
+<div class="modal fade" id="importWorkoutModal" tabindex="-1" aria-labelledby="importWorkoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="importWorkoutModalLabel">Import Workout</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="importWorkoutForm">
+          <div class="mb-3">
+            <label for="workoutFile" class="form-label">Upload Workout File</label>
+            <input type="file" class="form-control" id="workoutFile" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="importWorkoutBtn">Import</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let exercises = [];
+let currentExercise = 0;
+let exerciseTimerInterval;
+let exerciseSeconds = 0;
+let totalDuration = 0;
+
+function showExerciseStep(idx) {
+    if (idx >= exercises.length) {
+        document.getElementById('exercise-step-container').style.display = 'none';
+        document.getElementById('workout-complete').style.display = '';
+        return;
+    }
+    document.getElementById('exercise-step-container').style.display = '';
+    document.getElementById('workout-complete').style.display = 'none';
+    const ex = exercises[idx];
+    document.getElementById('exercise-title').textContent = ex.name;
+    document.getElementById('exercise-gif').src = ex.gif || '';
+    document.getElementById('exercise-gif').style.display = ex.gif ? 'block' : 'none';
+    if (ex.reps) {
+        document.getElementById('exercise-detail').textContent = `${ex.reps} reps`;
+        document.getElementById('exercise-timer').style.display = 'none';
+        document.getElementById('timer-progress').style.display = 'none';
+        document.getElementById('start-exercise-btn').style.display = 'none';
+        document.getElementById('done-exercise-btn').style.display = '';
+    } else if (ex.duration) {
+        document.getElementById('exercise-detail').textContent = `${ex.duration} seconds`;
+        document.getElementById('exercise-timer').textContent = `00:${String(ex.duration).padStart(2, '0')}`;
+        document.getElementById('exercise-timer').style.display = '';
+        document.getElementById('timer-progress').style.display = '';
+        document.getElementById('start-exercise-btn').style.display = '';
+        document.getElementById('done-exercise-btn').style.display = 'none';
+        totalDuration = ex.duration;
+    } else {
+        document.getElementById('exercise-detail').textContent = '';
+        document.getElementById('exercise-timer').style.display = 'none';
+        document.getElementById('timer-progress').style.display = 'none';
+        document.getElementById('start-exercise-btn').style.display = 'none';
+        document.getElementById('done-exercise-btn').style.display = '';
+    }
+}
+
+function startExerciseTimer(duration) {
+    exerciseSeconds = duration;
+    totalDuration = duration;
+    document.getElementById('exercise-timer').textContent = `00:${String(exerciseSeconds).padStart(2, '0')}`;
+    document.getElementById('timer-progress').style.display = '';
+    document.querySelector('.progress-bar').style.width = '0%';
+    
+    exerciseTimerInterval = setInterval(() => {
+        exerciseSeconds--;
+        const progress = ((totalDuration - exerciseSeconds) / totalDuration) * 100;
+        document.getElementById('exercise-timer').textContent = `00:${String(exerciseSeconds).padStart(2, '0')}`;
+        document.querySelector('.progress-bar').style.width = `${progress}%`;
+        
+        if (exerciseSeconds <= 0) {
+            clearInterval(exerciseTimerInterval);
+            document.getElementById('start-exercise-btn').style.display = 'none';
+            document.getElementById('done-exercise-btn').style.display = '';
+            document.querySelector('.progress-bar').style.width = '100%';
+        }
+    }, 1000);
+}
+
+function stopExerciseTimer() {
+    clearInterval(exerciseTimerInterval);
+    document.querySelector('.progress-bar').style.width = '0%';
+}
+
+document.querySelectorAll('.start-workout-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const level = this.getAttribute('data-level');
+        fetch(`/workouts/level/${level}`)
+            .then(response => response.json())
+            .then(data => {
+                exercises = data.exercises;
+                currentExercise = 0;
+                showExerciseStep(currentExercise);
+                var workoutModal = new bootstrap.Modal(document.getElementById('workoutModal'));
+                workoutModal.show();
+            });
+    });
+});
+
+document.getElementById('start-exercise-btn').addEventListener('click', function() {
+    const ex = exercises[currentExercise];
+    if (ex.duration) {
+        this.style.display = 'none';
+        document.getElementById('done-exercise-btn').style.display = 'none';
+        startExerciseTimer(ex.duration);
+    }
+});
+
+document.getElementById('done-exercise-btn').addEventListener('click', function() {
+    stopExerciseTimer();
+    currentExercise++;
+    showExerciseStep(currentExercise);
+});
+
+document.getElementById('workoutModal').addEventListener('hidden.bs.modal', function() {
+    stopExerciseTimer();
+});
+
+document.getElementById('saveWorkoutBtn').addEventListener('click', function() {
+    const workoutData = {
+        name: document.getElementById('workoutName').value,
+        description: document.getElementById('workoutDescription').value,
+        type: document.getElementById('workoutType').value,
+        difficulty: document.getElementById('workoutDifficulty').value,
+        duration: document.getElementById('workoutDuration').value,
+        calories_burned: document.getElementById('workoutCalories').value
+    };
+    fetch('/workouts/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(workoutData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Workout created successfully!');
+            location.reload();
+        } else {
+            alert('Error creating workout: ' + data.message);
+        }
+    });
+});
+
+document.getElementById('importWorkoutBtn').addEventListener('click', function() {
+    const fileInput = document.getElementById('workoutFile');
+    const file = fileInput.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const workoutData = JSON.parse(e.target.result);
+            fetch('/workouts/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(workoutData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Workout imported successfully!');
+                    location.reload();
+                } else {
+                    alert('Error importing workout: ' + data.message);
+                }
+            });
+        };
+        reader.readAsText(file);
+    } else {
+        alert('Please select a file to import.');
+    }
+});
+</script>
+{% endblock %} 
